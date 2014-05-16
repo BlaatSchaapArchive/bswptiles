@@ -1,0 +1,32 @@
+.bs-tile{
+  float:left; 
+  width: 450px;
+  height: 300px;
+  border: red 1px solid;
+  overflow : hidden;
+  margin: 10px;
+  border-radius: 25px;
+  /* display: inline-block;*/
+}
+
+.bs-tile-thumbnail {
+  float:left;
+  width:150px;
+  margin:10px;
+  margin-bottom:0px;
+}
+
+.bs-tile-title {
+  background-color: red;
+  color: white;
+  padding:10px;
+}
+
+.bs-tile-excerpt {
+  margin:5px;
+  hyphens: none;
+  -moz-hyphens: none;
+  -o-hyphens: none;
+  -ms-hyphens: none;
+  -webkit-hyphens: none;
+}
