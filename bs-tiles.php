@@ -12,7 +12,7 @@ License: BSD
 require_once("blaat.php");
 
 
-function blaat_tiles_menu() {
+function bstiles_menu() {
 
   if (!is_menu_page_registered('blaat_plugins')){
     add_menu_page('BlaatSchaap', 'BlaatSchaap', 'manage_options', 'blaat_plugins', 'blaat_plugins_page');
@@ -23,17 +23,17 @@ function blaat_tiles_menu() {
   add_submenu_page('blaat_plugins' ,  __('Tiles Configuration',"blaat_tiles"),
                                       __('Tiles',"blaat_tiles"),
                                       'manage_options',
-                                      'blaat_tiles_config',
-                                      'blaat_tiles_config_page' );
+                                      'bstiles_config',
+                                      'bstiles_config_page' );
 
   add_action( 'admin_init', 'bstiles_register_options' );
 
 }
 
-add_action("admin_menu", blaat_tiles_menu);
+add_action("admin_menu", bstiles_menu);
 
 //----------------------------------------------------------------------------
-function blaat_tiles_config_page(){
+function bstiles_config_page(){
     
   $title_fgcolour     = get_option( 'bstiles_title_fgcolour' );
   $title_bgcolour     = get_option( 'bstiles_title_bgcolour' );
@@ -47,6 +47,10 @@ function blaat_tiles_config_page(){
   $tiles_margin_left  = get_option( 'bstiles_tiles_margin_left');
   $tiles_margin_right = get_option( 'bstiles_tiles_margin_right');
   $tilecount          = get_option( 'bstiles_tilecount');
+
+
+  $showexcerpt        = get_option(  'bstiles_showexcerpt' );
+  $imagesize          = get_option(  'bstiles_imagesize' );
 
 
     echo '<div class="wrap">';
@@ -67,6 +71,37 @@ function blaat_tiles_config_page(){
     echo '<tr><th>'. __("Title background colour","blaat_tiles") .'</th><td>';
     echo "<input value='$title_bgcolour' name='bstiles_title_bgcolour' class='colour'>";
     echo '</td></tr>';
+
+    echo '<tr><th>'. __("Show Excerpt","blaat_tiles") .'</th><td>';
+    echo "<select name='bstiles_showexcerpt'>";
+    echo "<option value='1' ";
+    if (get_option(bstiles_showexcerpt)==1) echo " selected ";
+    echo ">".__("Yes","blaat_tiles")."</option>";
+    echo "<option value='0' ";
+    if (get_option(bstiles_showexcerpt)==0) echo " selected ";
+    echo ">".__("No","blaat_tiles")."</option>";
+    echo '</td></tr>';
+
+
+    echo '<tr><th>'. __("Image Size","blaat_tiles") .'</th><td>';
+    echo "<select name='bstiles_imagesize'>";
+    echo "<option value='thumbnail' ";
+    if (get_option(bstiles_imagesize)=='thumbnail') echo " selected ";
+    echo ">".__("thumbnail", "blaat_tiles")."</option>";
+    echo "<option value='medium' ";
+    if (get_option(bstiles_imagesize)=='medium') echo " selected ";
+    echo ">".__("medium", "blaat_tiles")."</option>";
+    echo "<option value='large' ";
+    if (get_option(bstiles_imagesize)=='large') echo " selected ";
+    echo ">".__("large", "blaat_tiles")."</option>";
+    echo "<option value='cover' ";
+    if (get_option(bstiles_imagesize)=='cover') echo " selected ";
+    echo ">".__("cover", "blaat_tiles")."</option>";
+    echo "<option value='none' ";
+    if (get_option(bstiles_imagesize)=='none') echo " selected ";
+    echo ">".__("none", "blaat_tiles")."</option>";
+    echo '</td></tr>';
+
 
     echo '<tr><th>'. __("Excerpt foreground colour","blaat_tiles") .'</th><td>';
     echo "<input value='$excerpt_fgcolour' name='bstiles_excerpt_fgcolour' class='colour'>";
@@ -126,17 +161,18 @@ function blaat_tiles_config_page(){
 function blaat_generate_tile($url, $title, $excerpt, $thumbnail){
     echo "<a href='$url'>";
     echo "<div class='bs-tile'><div class='bs-tile-title'>$title</div>";
-    echo "<img class='bs-tile-thumbnail' src='$thumbnail'>";
-    echo "<div class='bs-tile-excerpt'>$excerpt</div></div>";
-    echo "</a>";
+    echo "<div class='bs-tile-thumbnail-and-excerpt-container'>";
+    if ($thumbnail!="none") echo "<img class='bs-tile-thumbnail' src='$thumbnail'>";
+    if ($excerpt!="") echo "<div class='bs-tile-excerpt'>$excerpt</div>";
+    echo "</div></div></a>";
 }
 
 //----------------------------------------------------------------------------
-function blaat_tiles_display($atts, $content, $tag){
+function bstiles_display($atts, $content, $tag){
   bstiles_generate_css();
   echo "<div class='bs-tiles'>";
   $tilecount          = get_option( 'bstiles_tilecount' );
-
+  $imagesize          = get_option( 'bstiles_imagesize' );
   //category
   $args = array( 'posts_per_page'   => $tilecount ,
                  'post_status'      => 'publish',
@@ -148,11 +184,14 @@ function blaat_tiles_display($atts, $content, $tag){
   foreach ( $postslist as $post ) {
                 setup_postdata( $post );
                 $title = get_the_title($post->ID);
-		$excerpt =  get_the_excerpt();
+                $excerpt= "";
+		if (get_option(bstiles_showexcerpt)) $excerpt =  get_the_excerpt();
                 $url = get_permalink($post->ID ); 
-	
-		if (has_post_thumbnail($post->ID)  ) {
-		  $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), array(150,150) ); 
+		
+			
+		if ('none'!=$imagesize && has_post_thumbnail($post->ID)  ) {
+		  //$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), array(150,150) ); 
+                  $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $imagesize);
  		  $thumbnail=$image[0];
 		}
 		else $thumbnail="none";
@@ -177,6 +216,9 @@ function bstiles_register_options(){
   register_setting( 'blaat_tiles', 'bstiles_tiles_margin_right' );
   register_setting( 'blaat_tiles', 'bstiles_tilecount' );
 
+  register_setting( 'blaat_tiles', 'bstiles_showexcerpt' );
+  register_setting( 'blaat_tiles', 'bstiles_imagesize' );
+
 }
 //----------------------------------------------------------------------------
 function bstiles_generate_css(){
@@ -194,48 +236,100 @@ function bstiles_generate_css(){
 
 
   echo "<style>
-.bs-tiles {
-    margin-left:".$tiles_margin_left."px;
-    margin-right:".$tiles_margin_right."px;
-}
-.bs-tile {
-  float:left; 
-  width: ".$tile_width."px;
-  height: ".$tile_height."px;
-  border:$title_bgcolour 1px solid;
-  overflow : hidden;
-  margin: ".$tile_margin."px;
-  background-color: $tile_bgcolour;
-  border-radius: ".$tile_corner."px;
-}
+      .bs-tiles {
+        margin-left:".$tiles_margin_left."px;
+        margin-right:".$tiles_margin_right."px;
+      }
+      .bs-tile {
+        float:left; 
+        width: ".$tile_width."px;
+        height: ".$tile_height."px;
+        border:$title_bgcolour 1px solid;
+        overflow : hidden;
+        margin: ".$tile_margin."px;
+        background-color: $tile_bgcolour;
+        border-radius: ".$tile_corner."px;
+      }
 
-.bs-tile-thumbnail {
-  float:left;
-  width:150px;
-  margin:10px;
-  margin-bottom:0px;
-}
-.bs-tile-title {
-  background-color: $title_bgcolour;
-  color: $title_fgcolour;
-  padding:10px;
-}
+      .bs-tile-title {
+        background-color: $title_bgcolour;
+        color: $title_fgcolour;
+        padding:10px;
+      }
 
-.bs-tile-excerpt {
-  /* background-color: $excerpt_bgcolour; */
-  color: $excerpt_fgcolour;
-  margin:5px;
-  hyphens: none;
-  -moz-hyphens: none;
-  -o-hyphens: none;
-  -ms-hyphens: none;
-  -webkit-hyphens: none;
-}
-</style>";
+      .bs-tile-excerpt {
+        /* background-color: $excerpt_bgcolour; */
+        color: $excerpt_fgcolour;
+        margin:5px;
+        hyphens: none;
+        -moz-hyphens: none;
+        -o-hyphens: none;
+        -ms-hyphens: none;
+        -webkit-hyphens: none;
+      }
+      </style>";
 
-}
-
-add_shortcode( 'bstiles', 'blaat_tiles_display' );
+  $imagesize = get_option("bstiles_imagesize");
+  $showexcerpt = get_option("bstiles_showexcerpt");
+  if ($showexcerpt) {
+    $extrastyle .= "
+      .bs-tile-thumbnail {
+       float:left;
+       margin:10px;
+       margin-bottom:0px;
+    }";
+  } else {
+    $lineheight= $tile_height -  $tile_corner ;
+    $extrastyle .= "
+      .bs-tile-thumbnail-and-excerpt-container{
+        line-height: ".$lineheight."px;
+        text-align:center;
+      }
+      .bs-tile-thumbnail {
+      margin: auto;
+      display:inline-block;
+      vertical-align: middle;
+      }";
+  } 
+  
+  if ($imagesize=="none") 
+    $extrastyle .= "
+      .bs-tile-thumbnail {
+      display:none;
+      }";
+  else 
+  if ($imagesize=="thumbnail") 
+    $extrastyle .= "
+      .bs-tile-thumbnail {
+      max-width: 150px;
+      max-height: 150px;
+      }"; 
+  if ($imagesize=="medium") 
+    $extrastyle .= "
+      .bs-tile-thumbnail {
+      max-width: 300px;
+      max-height: 300px;
+      }";
+  else
+  if ($imagesize=="large")   
+    $extrastyle .= "
+      .bs-tile-thumbnail {
+      max-width: 640px;
+      max-height: 640px;
+      }";
+  else
+    if ($imagesize=="cover")
+    $extrastyle .= "
+      .bs-tile-thumbnail {
+      height:auto;
+      width:auto;
+      min-width: 100%;
+      min-height: 100%;
+      
+      }";
+  echo "<style>$extrastyle</style>";
+  }
+add_shortcode( 'bstiles', 'bstiles_display' );
 
 //wp_register_style("blaat_tiles" , plugin_dir_url(__FILE__) . "css/bs-tiles.css");
 wp_enqueue_style( "blaat_tiles");
