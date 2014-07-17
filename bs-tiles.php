@@ -158,13 +158,17 @@ function bstiles_config_page(){
 
 }
 //----------------------------------------------------------------------------
-function blaat_generate_tile($url, $title, $excerpt, $thumbnail){
+function blaat_generate_tile($url, $title, $excerpt, $thumbnail,$bg){
+    $id="blah".uniqid();
     echo "<a href='$url'>";
-    echo "<div class='bs-tile'><div class='bs-tile-title'>$title</div>";
+    echo "<div class='bs-tile' id='$id'><div class='bs-tile-title'>$title</div>";
     echo "<div class='bs-tile-thumbnail-and-excerpt-container'>";
     if ($thumbnail!="none") echo "<img class='bs-tile-thumbnail' src='$thumbnail'>";
     if ($excerpt!="") echo "<div class='bs-tile-excerpt'>$excerpt</div>";
     echo "</div></div></a>";
+    if ($bg!="none"){
+      echo "<style>#$id  { background-size: cover; background: url($bg) no-repeat center center;}</style>";
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -187,15 +191,23 @@ function bstiles_display($atts, $content, $tag){
                 $excerpt= "";
 		if (get_option(bstiles_showexcerpt)) $excerpt =  get_the_excerpt();
                 $url = get_permalink($post->ID ); 
-		
+	
+
+		if ($imagesize=="cover"){	
+			$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ),"large");
+			$bg=$image[0];
+			$thumbnail="none";
+		} else
 			
 		if ('none'!=$imagesize && has_post_thumbnail($post->ID)  ) {
 		  //$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), array(150,150) ); 
-                  $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $imagesize);
+        	  $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $imagesize);
  		  $thumbnail=$image[0];
+		  $bg="none";
 		}
 		else $thumbnail="none";
-		blaat_generate_tile($url,$title,$excerpt,$thumbnail);
+	
+	blaat_generate_tile($url,$title,$excerpt,$thumbnail,$bg);
 		wp_reset_postdata();
   }
   echo "</div>";
