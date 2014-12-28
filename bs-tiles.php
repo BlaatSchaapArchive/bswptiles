@@ -37,6 +37,8 @@ function bstiles_config_page(){
     
   $title_fgcolour     = get_option( 'bstiles_title_fgcolour' );
   $title_bgcolour     = get_option( 'bstiles_title_bgcolour' );
+  $title_height       = get_option( 'bstiles_title_height' );
+  $title_padding      = get_option( 'bstiles_title_padding' );
   $excerpt_fgcolour   = get_option( 'bstiles_excerpt_fgcolour' );
   $excerpt_bgcolour   = get_option( 'bstiles_excerpt_bgcolour' );
   $tile_bgcolour      = get_option( 'bstiles_tile_bgcolour' );
@@ -71,6 +73,16 @@ function bstiles_config_page(){
     echo '<tr><th>'. __("Title background colour","blaat_tiles") .'</th><td>';
     echo "<input value='$title_bgcolour' name='bstiles_title_bgcolour' class='colour'>";
     echo '</td></tr>';
+
+    echo '<tr><th>'. __("Title height","blaat_tiles") .'</th><td>';
+    echo "<input value='$title_height' name='bstiles_title_height'>";
+    echo '</td></tr>';
+
+    echo '<tr><th>'. __("Title padding","blaat_tiles") .'</th><td>';
+    echo "<input value='$title_padding' name='bstiles_title_padding'>";
+    echo '</td></tr>';
+
+
 
     echo '<tr><th>'. __("Show Excerpt","blaat_tiles") .'</th><td>';
     echo "<select name='bstiles_showexcerpt'>";
@@ -217,6 +229,8 @@ function bstiles_display($atts, $content, $tag){
 function bstiles_register_options(){
   register_setting( 'blaat_tiles', 'bstiles_title_fgcolour' );
   register_setting( 'blaat_tiles', 'bstiles_title_bgcolour' );
+  register_setting( 'blaat_tiles', 'bstiles_title_height' );
+  register_setting( 'blaat_tiles', 'bstiles_title_padding' );
   register_setting( 'blaat_tiles', 'bstiles_excerpt_fgcolour' );
   register_setting( 'blaat_tiles', 'bstiles_excerpt_bgcolour' );
   register_setting( 'blaat_tiles', 'bstiles_tile_bgcolour' );
@@ -236,6 +250,8 @@ function bstiles_register_options(){
 function bstiles_generate_css(){
   $title_fgcolour     = get_option( 'bstiles_title_fgcolour' );
   $title_bgcolour     = get_option( 'bstiles_title_bgcolour' );
+  $title_height       = get_option( 'bstiles_title_height' );
+  $title_padding       = get_option( 'bstiles_title_padding' );
   $excerpt_fgcolour   = get_option( 'bstiles_excerpt_fgcolour' );
   $excerpt_bgcolour   = get_option( 'bstiles_excerpt_bgcolour' );
   $tile_bgcolour      = get_option( 'bstiles_tile_bgcolour' );
@@ -246,6 +262,15 @@ function bstiles_generate_css(){
   $tiles_margin_left  = get_option( 'bstiles_tiles_margin_left' );
   $tiles_margin_right = get_option( 'bstiles_tiles_margin_right' );
 
+
+  if ($title_height) {
+      echo "<style> 
+     .bs-tile-title {
+        height : ".$title_height."px;
+        overflow : hidden;        
+      }
+    </style>";
+    }
 
   echo "<style>
       .bs-tiles {
@@ -266,7 +291,7 @@ function bstiles_generate_css(){
       .bs-tile-title {
         background-color: $title_bgcolour;
         color: $title_fgcolour;
-        padding:10px;
+        padding: ".$title_padding."px;
       }
 
       .bs-tile-excerpt {
