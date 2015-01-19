@@ -1,0 +1,221 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: BlaatSchaap Tiles v0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-01-19 12:35:03+0000\n"
+"Last-Translator: andre <beheer@blaatschaap.be>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: CSL v1.x\n"
+"X-Poedit-Language: Dutch\n"
+"X-Poedit-Country: NETHERLANDS\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: \n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#: blaat.php:13
+#@ blaatschaap
+msgid "BlaatSchaap Plugins"
+msgstr "BlaatSchaap Plugins"
+
+#: blaat.php:15
+#@ blaatschaap
+msgid "Thank you for using BlaatSchaap plugins."
+msgstr "Bedankt voor het gebruik van BlaatSchaap plugins."
+
+#: blaat.php:26
+#@ blaatschaap
+msgid "Installed BlaatSchaap plugins:"
+msgstr "Geïnstalleerde BlaatSchaap plugins:"
+
+#: blaat.php:30
+#@ blaatschaap
+msgid "Plugin name:"
+msgstr "Pluginnaam:"
+
+#: blaat.php:32
+#@ blaatschaap
+msgid "Plugin version:"
+msgstr "Pluginversie:"
+
+#: blaat.php:34
+#@ blaatschaap
+msgid "Status:"
+msgstr "Status:"
+
+#: blaat.php:39
+#@ blaatschaap
+msgid "active"
+msgstr "actief"
+
+#: blaat.php:39
+#@ blaatschaap
+msgid "inactive"
+msgstr "inactief"
+
+#: bs-tiles.php:29
+#@ blaat_tiles
+msgid "Tiles Configuration"
+msgstr "Tegelconfiguratie"
+
+#: bs-tiles.php:30
+#@ blaat_tiles
+msgid "Tiles"
+msgstr "Tegels"
+
+#: bs-tiles.php:66
+#@ blaat_tiles
+msgid "BlaatSchaap Tiles"
+msgstr "BlaatSchaap Tegels"
+
+#: bs-tiles.php:74
+#@ blaat_tiles
+msgid "Title foreground colour"
+msgstr "Voorgrondkleur tegel"
+
+#: bs-tiles.php:79
+#@ blaat_tiles
+msgid "Title background colour"
+msgstr "Achtergrondkleur tegel"
+
+#: bs-tiles.php:83
+#@ blaat_tiles
+msgid "Title height"
+msgstr "Hoogte tegel"
+
+#: bs-tiles.php:87
+#@ blaat_tiles
+msgid "Title padding"
+msgstr "Tegelvulling"
+
+#: bs-tiles.php:93
+#@ blaat_tiles
+msgid "Show Excerpt"
+msgstr "Toon samenvatting"
+
+#: bs-tiles.php:97
+#: bs-tiles.php:168
+#: bs-tiles.php:178
+#@ blaat_tiles
+msgid "Yes"
+msgstr "Ja"
+
+#: bs-tiles.php:100
+#: bs-tiles.php:171
+#: bs-tiles.php:181
+#@ blaat_tiles
+msgid "No"
+msgstr "Nee"
+
+#: bs-tiles.php:104
+#@ blaat_tiles
+msgid "Image Size"
+msgstr "Afmetingen afbeelding"
+
+#: bs-tiles.php:108
+#@ blaat_tiles
+msgid "thumbnail"
+msgstr "klein"
+
+#: bs-tiles.php:111
+#@ blaat_tiles
+msgid "medium"
+msgstr "middel"
+
+#: bs-tiles.php:114
+#@ blaat_tiles
+msgid "large"
+msgstr "groot"
+
+#: bs-tiles.php:117
+#@ blaat_tiles
+msgid "cover"
+msgstr "bedekken"
+
+#: bs-tiles.php:120
+#@ blaat_tiles
+msgid "none"
+msgstr "geen"
+
+#: bs-tiles.php:124
+#@ blaat_tiles
+msgid "Excerpt foreground colour"
+msgstr "Voorgrondkleur samenvatting"
+
+#: bs-tiles.php:132
+#@ blaat_tiles
+msgid "Tile background colour"
+msgstr "Achtergrondkleur tegel"
+
+#: bs-tiles.php:136
+#@ blaat_tiles
+msgid "Tile height"
+msgstr "Hoogte tegel"
+
+#: bs-tiles.php:140
+#@ blaat_tiles
+msgid "Tile width"
+msgstr "Breedte tegel"
+
+#: bs-tiles.php:144
+#@ blaat_tiles
+msgid "Tile corner radius"
+msgstr "Straal hoek tegel"
+
+#: bs-tiles.php:148
+#@ blaat_tiles
+msgid "Tile margin"
+msgstr "Marge tegel"
+
+#: bs-tiles.php:152
+#@ blaat_tiles
+msgid "Tiles margin left"
+msgstr "Linkermarge tegels"
+
+#: bs-tiles.php:156
+#@ blaat_tiles
+msgid "Tiles margin right"
+msgstr "Rechtermarge tegels"
+
+#: bs-tiles.php:160
+#@ blaat_tiles
+msgid "Number of tiles"
+msgstr "Aantal tegels"
+
+#: bs-tiles.php:164
+#@ blaat_tiles
+msgid "Enable Pagination"
+msgstr "Paginering inschakelen"
+
+#: bs-tiles.php:174
+#@ blaat_tiles
+msgid "Show Archive"
+msgstr "Archief tonen"
+
+#: bs-tiles.php:185
+#@ blaat_tiles
+msgid "Save Changes"
+msgstr "Wijzigingen opslaah"
+
+#: bs-tiles.php:265
+#@ blaat_tiles
+msgid "Previous"
+msgstr "Vorige"
+
+#: bs-tiles.php:274
+#@ blaat_tiles
+msgid "Archive"
+msgstr "Archief"
+
+#: bs-tiles.php:278
+#@ blaat_tiles
+msgid "Next"
+msgstr "Volgende"
+

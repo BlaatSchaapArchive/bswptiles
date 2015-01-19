@@ -12,6 +12,12 @@ License: BSD
 require_once("blaat.php");
 
 
+// localisation
+load_plugin_textdomain('blaat_tiles', false, basename( dirname( __FILE__ ) ) . '/languages' );
+//
+
+
+
 function bstiles_menu() {
 
   if (!is_menu_page_registered('blaat_plugins')){
@@ -49,15 +55,15 @@ function bstiles_config_page(){
   $tiles_margin_left  = get_option( 'bstiles_tiles_margin_left');
   $tiles_margin_right = get_option( 'bstiles_tiles_margin_right');
   $tilecount          = get_option( 'bstiles_tilecount');
-
-
-  $showexcerpt        = get_option(  'bstiles_showexcerpt' );
-  $imagesize          = get_option(  'bstiles_imagesize' );
+  $paginate           = get_option( 'bstiles_paginate');
+  $archive            = get_option( 'bstiles_archive');
+  $showexcerpt        = get_option( 'bstiles_showexcerpt' );
+  $imagesize          = get_option( 'bstiles_imagesize' );
 
 
     echo '<div class="wrap">';
     echo '<h2>';
-    _e("BlaatSchaap Tiles","blaat_auth");
+    _e("BlaatSchaap Tiles","blaat_tiles");
     echo '</h2>';
  
     echo '<form method="post" action="options.php">';
@@ -155,8 +161,28 @@ function bstiles_config_page(){
     echo "<input value='$tilecount' name='bstiles_tilecount'>";
     echo '</td></tr>';
 
+    echo '<tr><th>'. __("Enable Pagination","blaat_tiles") .'</th><td>';
+    echo "<select name='bstiles_paginate'>";
+    echo "<option value='1' ";
+    if (get_option(bstiles_paginate)==1) echo " selected ";
+    echo ">".__("Yes","blaat_tiles")."</option>";
+    echo "<option value='0' ";
+    if (get_option(bstiles_paginate)==0) echo " selected ";
+    echo ">".__("No","blaat_tiles")."</option>";
+    echo '</td></tr>';
+
+    echo '<tr><th>'. __("Show Archive","blaat_tiles") .'</th><td>';
+    echo "<select name='bstiles_archive'>";
+    echo "<option value='1' ";
+    if (get_option(bstiles_archive)==1) echo " selected ";
+    echo ">".__("Yes","blaat_tiles")."</option>";
+    echo "<option value='0' ";
+    if (get_option(bstiles_archive)==0) echo " selected ";
+    echo ">".__("No","blaat_tiles")."</option>";
+    echo '</td></tr>';
+
     echo '</table><input name="Submit" type="submit" value="';
-    echo  esc_attr_e('Save Changes') ;
+    echo  esc_attr_e('Save Changes' , "blaat_tiles") ;
     echo '" ></form></div>';
 
     wp_enqueue_script('wp-color-picker');
@@ -170,7 +196,7 @@ function bstiles_config_page(){
 
 }
 //----------------------------------------------------------------------------
-function blaat_generate_tile($url, $title, $excerpt, $thumbnail,$bg){
+function blaat_generate_tile($url, $title, $excerpt, $thumbnail, $bg){
     $id="blah".uniqid();
     echo "<a href='$url'>";
     echo "<div class='bs-tile' id='$id'><div class='bs-tile-title'>$title</div>";
@@ -189,10 +215,18 @@ function bstiles_display($atts, $content, $tag){
   echo "<div class='bs-tiles'>";
   $tilecount          = get_option( 'bstiles_tilecount' );
   $imagesize          = get_option( 'bstiles_imagesize' );
+  $paginate           = get_option( 'bstiles_paginate' );
+  $archive            = get_option( 'bstiles_archive' );
+
+  $offset = 0;
+  if (isset($_GET['offset']))   if (is_numeric($_GET['offset'])) $offset=$_GET['offset'];
+
+
   //category
   $args = array( 'posts_per_page'   => $tilecount ,
                  'post_status'      => 'publish',
-                 'orderby'          => 'post_date');
+                 'orderby'          => 'post_date',
+                 'offset'           => $offset );
 
   if (isset($atts['cat'])) $args['category']=$atts['cat'];
 
@@ -222,6 +256,29 @@ function bstiles_display($atts, $content, $tag){
 	blaat_generate_tile($url,$title,$excerpt,$thumbnail,$bg);
 		wp_reset_postdata();
   }
+
+  if ($paginate || $archive) {
+    echo "<div id='bs-tiles-nav'>";
+
+    if ($paginate) {
+      $prev = $offset-$tilecount;
+      echo "<a href='?offset=" . $prev ."'>". __("Previous", "blaat_tiles") ."</a>";      
+    }
+    if ($archive) {
+        if (isset($atts['cat'])) {
+        $url = get_category_link( $atts['cat'] );
+      } else {
+        $url = "?post_type=post";
+      }
+      $url =  esc_url($url);
+      echo "<a href='$url'>". __("Archive", "blaat_tiles") ."</a>";
+    }  
+    if ($paginate) {
+      $next = $offset+$tilecount;
+      echo "<a href='?offset=" . $next ."'>" .  __("Next", "blaat_tiles")  . "</a>";
+    }  
+  echo "</div>";
+  }
   echo "</div>";
 
 }
@@ -241,7 +298,8 @@ function bstiles_register_options(){
   register_setting( 'blaat_tiles', 'bstiles_tiles_margin_left' );
   register_setting( 'blaat_tiles', 'bstiles_tiles_margin_right' );
   register_setting( 'blaat_tiles', 'bstiles_tilecount' );
-
+  register_setting( 'blaat_tiles', 'bstiles_paginate' );
+  register_setting( 'blaat_tiles', 'bstiles_archive' );
   register_setting( 'blaat_tiles', 'bstiles_showexcerpt' );
   register_setting( 'blaat_tiles', 'bstiles_imagesize' );
 
@@ -251,7 +309,7 @@ function bstiles_generate_css(){
   $title_fgcolour     = get_option( 'bstiles_title_fgcolour' );
   $title_bgcolour     = get_option( 'bstiles_title_bgcolour' );
   $title_height       = get_option( 'bstiles_title_height' );
-  $title_padding       = get_option( 'bstiles_title_padding' );
+  $title_padding      = get_option( 'bstiles_title_padding' );
   $excerpt_fgcolour   = get_option( 'bstiles_excerpt_fgcolour' );
   $excerpt_bgcolour   = get_option( 'bstiles_excerpt_bgcolour' );
   $tile_bgcolour      = get_option( 'bstiles_tile_bgcolour' );
@@ -303,6 +361,22 @@ function bstiles_generate_css(){
         -o-hyphens: none;
         -ms-hyphens: none;
         -webkit-hyphens: none;
+      }
+
+      #bs-tiles-nav {
+        text-align: center;
+        display: block;
+        width: 100%;
+      }
+
+      #bs-tiles-nav a {
+        display: inline-block;
+        background-color: $title_bgcolour;
+        color: $title_fgcolour;
+        width: 100px;
+        height: 25px;
+        border:$title_bgcolour 1px solid;
+        margin: ".$tile_margin."px;
       }
       </style>";
 
@@ -369,7 +443,7 @@ function bstiles_generate_css(){
 add_shortcode( 'bstiles', 'bstiles_display' );
 
 //wp_register_style("blaat_tiles" , plugin_dir_url(__FILE__) . "css/bs-tiles.css");
-wp_enqueue_style( "blaat_tiles");
+//wp_enqueue_style( "blaat_tiles");
 
 
 ?>
